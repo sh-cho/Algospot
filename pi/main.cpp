@@ -6,6 +6,8 @@ using namespace std;
 
 const int INF = 987654321;
 string N;
+int cache[10002];
+
 
 // N[a, b] 구간 난이도 반환
 int classify(int a, int b) {
@@ -42,14 +44,41 @@ int classify(int a, int b) {
 	return 10;
 }
 
+int memorize(int begin) {
+	// base : 수열의 끝에 도달했을 때
+	if (begin == N.size()) return 0;
+
+	// memoization
+	int& ret = cache[begin];
+	if (ret != -1) return ret;
+	ret = INF;
+
+
+	for (int L=3; L<=5; ++L)
+		if (begin+L <= N.size())
+			ret = min(ret, memorize(begin+L) + classify(begin, begin+L-1));
+
+	return ret;
+}
+
+
+
 int main() {
 #ifndef ONLINE_JUDGE
-	freopen("input.txt", "r", stdin);
+	//freopen("input.txt", "r", stdin);
 #endif
 
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
+	
+	int t;
+	cin >> t;
 
+	while (t--) {
+		memset(cache, -1, sizeof(cache));
+		cin >> N;
+		cout << memorize(0) << '\n';
+	}
 
 
 	return 0;
